@@ -68,6 +68,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	bind := os.Getenv("BIND")
+	if bind == "" {
+		bind = "127.0.0.1"
+	}
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8081"
@@ -75,11 +79,11 @@ func main() {
 
 	http.HandleFunc("/", handler)
 	srv := &http.Server{
-		Addr:         ":" + port,
+		Addr:         bind + ":" + port,
 		ReadTimeout:  2 * time.Second,
 		WriteTimeout: 2 * time.Second,
 	}
 
-	log.Printf("Listening on http://127.0.0.1:%s", port)
+	log.Printf("Listening on http://%s:%s", bind, port)
 	log.Fatal(srv.ListenAndServe())
 }
